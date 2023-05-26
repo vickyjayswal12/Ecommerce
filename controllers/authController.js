@@ -9,26 +9,26 @@ export const registerController = async (req, resp) => {
         // validation
         if (!name) {
             //if we will not return than further(aage ka) code excute hota rahega 
-            return resp.send({ error: 'name is require' })
+            return resp.send({ message: 'name is require' })
         }
         if (!email) {
-            return resp.send({ error: 'email is require' })
+            return resp.send({ message: 'email is require' })
         }
         if (!password) {
-            return resp.send({ error: 'password is require' })
+            return resp.send({ message: 'password is require' })
         }
         if (!phone) {
-            return resp.send({ error: 'phone no is require' })
+            return resp.send({ message: 'phone no is require' })
         }
         if (!address) {
-            return resp.send({ error: 'address is require' })
+            return resp.send({ message: 'address is require' })
         }
 
         //check she/he is existing user or not
         const existingUser = await userModel.findOne({ email })
         if (existingUser) {
             return resp.status(200).send({
-                success: true,
+                success: false,
                 message: "already register please login",
             })
         }
@@ -44,7 +44,7 @@ export const registerController = async (req, resp) => {
         resp.status(201).send({
             success: true,
             message: 'user registration successfully',
-            user,
+            user
         })
 
 
