@@ -18,5 +18,9 @@ router.post('/login', loginController)
 // in this token and admin also check firs check requir then isadmin
 router.get('/test', requireSignin, isAdmin, test)
 
+// protected rout auth for check authontication user
+router.get("/user-auth", requireSignin, (req, resp) => {
+    resp.status(200).send({ ok: true });
+})
 
 export default router;
