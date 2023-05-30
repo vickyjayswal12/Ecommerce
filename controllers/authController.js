@@ -4,7 +4,7 @@ import userModel from "../models/userModel.js";
 import JWT from "jsonwebtoken";
 export const registerController = async (req, resp) => {
     try {
-        const { name, email, password, phone, address } = req.body;
+        const { name, email, password, phone, address, answer } = req.body;
 
         // validation
         if (!name) {
@@ -23,6 +23,9 @@ export const registerController = async (req, resp) => {
         if (!address) {
             return resp.send({ message: 'address is require' })
         }
+        if (!answer) {
+            return resp.send({ message: 'answer is require' })
+        }
 
         //check she/he is existing user or not
         const existingUser = await userModel.findOne({ email })
@@ -39,7 +42,7 @@ export const registerController = async (req, resp) => {
 
         //save
         //we can paas direct req body here we password encrypted so cant direct store
-        const user = await new userModel({ name, email, phone, address, password: hashedPassword }).save();
+        const user = await new userModel({ name, email, phone, address, password: hashedPassword, answer }).save();
         // console.log(user);
         resp.status(201).send({
             success: true,
@@ -63,6 +66,7 @@ export const registerController = async (req, resp) => {
 
 
 // post login
+
 export const loginController = async (req, resp) => {
     try {
         const { email, password } = req.body;
@@ -70,7 +74,7 @@ export const loginController = async (req, resp) => {
         if (!email, !password) {
             return resp.status(404).send({
                 success: false,
-                message: 'invalid password or email'
+                message: 'provide password or email'
             })
         }
 
@@ -102,7 +106,8 @@ export const loginController = async (req, resp) => {
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
-                address: user.address
+                address: user.address,
+                role: user.role
             },
             token,
         });
@@ -116,6 +121,49 @@ export const loginController = async (req, resp) => {
         })
     }
 };
+
+//for forgrt controller
+
+export const forgetPasswordController = async (req, resp) => {
+    try {
+        const { email, answer, newpassword } = req.body
+        if (!email) {
+            resp.status(400).send({ message: 'email is required' })
+        }
+        if (!answer) {
+            resp.status(400).send({ message: 'email is required' })
+        }
+        if (!newpassword) {
+            resp.status(400).send({ message: 'email is required' })
+        }
+        const user = await userModel.findOne({ email, answer })
+        if (!user) {
+            return resp.status(404).send({
+                succes: false,
+                message: 'provide valid email or answer'
+            })
+        }
+        const hashedPass = await hashPassword(newpassword)
+        await userModel.findByIdAndUpdate(user._id, { password: hashedPass })
+        resp.status(200).send({
+            success: true,
+            message: 'password reset successfully'
+        });
+
+
+
+
+
+    } catch (error) {
+        console.log(error)
+        resp.status(500).send({
+            success: false,
+            message: 'something went wrong',
+            error
+        })
+    }
+
+}
 
 
 //for testing jwt varification using middleware
