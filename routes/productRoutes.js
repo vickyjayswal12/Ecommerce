@@ -24,7 +24,7 @@ router.put(
     updateProductController
 );
 
-//get products
+//get all products
 router.get("/get-product", getProductController);
 
 //single product
@@ -33,7 +33,7 @@ router.get("/get-product/:slug", getSingleProductController);
 //get product photo
 router.get("/product-photo/:pid", productPhotoController);
 
-//delete rproduct
+//delete product
 router.delete("/delete-product/:pid", deleteProductController);
 
 
