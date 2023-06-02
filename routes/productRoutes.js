@@ -1,5 +1,5 @@
 import express from "express";
-import { createProductController, deleteProductController, getProductController, getSingleProductController, productPhotoController, updateProductController } from "../controllers/productController.js";
+import { createProductController, deleteProductController, getProductController, getSingleProductController, productFiltersController, productPhotoController, updateProductController } from "../controllers/productController.js";
 import { isAdmin, requireSignin } from "../middlewares/authMiddleware.js";
 //to get file easily from form we use express-formidable middleware 
 import formidable from "express-formidable";
@@ -36,5 +36,6 @@ router.get("/product-photo/:pid", productPhotoController);
 //delete product
 router.delete("/delete-product/:pid", deleteProductController);
 
-
+//filter product
+router.post("/product-filters", productFiltersController);
 export default router;
